@@ -74,7 +74,6 @@ namespace UserManagementSystem.Controllers
             using (var reader = new StreamReader(filePath))
             {
                 var json = reader.ReadToEnd();
-                return JsonConvert.DeserializeObject<List<User>>(json);
             }
         }
 
