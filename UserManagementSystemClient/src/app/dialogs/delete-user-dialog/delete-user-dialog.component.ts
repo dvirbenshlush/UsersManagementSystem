@@ -23,5 +23,6 @@ export class DeleteUserDialogComponent {
     this.usersService.removeUser(this.data.id).subscribe((data: any) => {
       this.onLoad = false;
     });
+    this.dialogRef.close();
   }
 }

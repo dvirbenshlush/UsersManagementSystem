@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
 import { Users } from '../models/users.model';
+import * as config from '../config/config.json';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsersService {
-  private apiUrl = 'https://localhost:7122/Users';
+  
+  private apiUrl = config.apiUrl;
 
   constructor(private http: HttpClient) { }
 

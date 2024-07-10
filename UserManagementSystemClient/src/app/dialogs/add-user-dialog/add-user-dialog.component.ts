@@ -33,6 +33,7 @@ export class AddUserDialogComponent {
       this.onLoad = false;
       console.log(this.form.value);
     });
+    this.dialogRef.close();
   }
 
 }

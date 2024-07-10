@@ -33,5 +33,6 @@ export class UpdateUserDialogComponent {
     this.usersService.updateUser(this.data.id, this.form.value).subscribe((data: any) => {
       this.onLoad = false;
     });
+    this.dialogRef.close();
   }
 }

@@ -10,7 +10,14 @@ namespace UserManagementSystem.Controllers
     [ApiController]
     public class UsersController : Controller
     {
-        private readonly string filePath = "data.json";
+
+        private readonly IConfiguration _configuration;
+
+        public UsersController  (IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         private static readonly object fileLock = new object();
 
         // Get all Users
@@ -79,6 +86,7 @@ namespace UserManagementSystem.Controllers
 
         private List<User> ReadJsonFile()
         {
+            string filePath = _configuration["dataPath"];
             lock (fileLock)
             {
                 if (!System.IO.File.Exists(filePath))
@@ -91,6 +99,7 @@ namespace UserManagementSystem.Controllers
 
         private void WriteJsonFile(List<User> Users)
         {
+            string filePath = _configuration["dataPath"];
             lock (fileLock)
             {
                 var json = JsonConvert.SerializeObject(Users, Formatting.Indented);
