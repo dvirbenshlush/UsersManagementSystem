@@ -1,0 +1,25 @@
+<mat-dialog-content>
+    <form [formGroup]="form" (ngSubmit)="updateUser()">
+        <div>
+            <label for="name">Name:</label>
+            <input id="name" formControlName="name" />
+            @if(form.controls['name'].invalid && form.controls['name'].touched) {
+                <div>
+                    Name is required.
+                </div>
+            }
+        </div>
+
+        <div>
+            <label for="email">Email:</label>
+            <input id="email" formControlName="email" />
+        </div>
+
+        <div>
+            <label for="password">Password:</label>
+            <input id="password" type="password" formControlName="password" />
+        </div>
+
+        <button mat-flat-button class="button" color="primary" type="submit" (click)="updateUser()" [disabled]="form.invalid">Submit</button>
+    </form>
+</mat-dialog-content>

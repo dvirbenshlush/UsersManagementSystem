@@ -1,14 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace UserManagementSystem.Controllers
 {
+    [Route("[controller]")]
+    [ApiController]
     public class UsersController : Controller
     {
         private readonly string filePath = "data.json";
+        private static readonly object fileLock = new object();
 
         // Get all Users
-        [HttpGet]
+        [HttpGet("getAllUsers")]
         public ActionResult<IEnumerable<User>> Get()
         {
             var Users = ReadJsonFile();
@@ -29,18 +35,18 @@ namespace UserManagementSystem.Controllers
         }
 
         // Add new User
-        [HttpPost]
+        [HttpPost("addUser")]
         public ActionResult<User> Post([FromBody] User newUser)
         {
             var Users = ReadJsonFile();
-            newUser.Id = Users.Max(i => i.Id) + 1;
+            newUser.Id = Users.Count == 0 ? 1 : Users.Max(i => i.Id) + 1;
             Users.Add(newUser);
             WriteJsonFile(Users);
             return CreatedAtAction(nameof(Get), new { id = newUser.Id }, newUser);
         }
 
         // Update User
-        [HttpPut("{id}")]
+        [HttpPut("updateUser")]
         public IActionResult Put(int id, [FromBody] User updatedUser)
         {
             var Users = ReadJsonFile();
@@ -50,12 +56,14 @@ namespace UserManagementSystem.Controllers
                 return NotFound();
             }
             User.Name = updatedUser.Name;
+            User.Email = updatedUser.Email;
+            User.Password = updatedUser.Password;
             WriteJsonFile(Users);
             return NoContent();
         }
 
         // Delete User
-        [HttpDelete("{id}")]
+        [HttpDelete("removeUser")]
         public IActionResult Delete(int id)
         {
             var Users = ReadJsonFile();
@@ -71,18 +79,22 @@ namespace UserManagementSystem.Controllers
 
         private List<User> ReadJsonFile()
         {
-            using (var reader = new StreamReader(filePath))
+            lock (fileLock)
             {
-                var json = reader.ReadToEnd();
+                if (!System.IO.File.Exists(filePath))
+                    return new List<User>();
+
+                var json = System.IO.File.ReadAllText(filePath);
+                return JsonConvert.DeserializeObject<List<User>>(json);
             }
         }
 
         private void WriteJsonFile(List<User> Users)
         {
-            using (var writer = new StreamWriter(filePath))
+            lock (fileLock)
             {
                 var json = JsonConvert.SerializeObject(Users, Formatting.Indented);
-                writer.Write(json);
+                System.IO.File.WriteAllText(filePath, json);
             }
         }
     }

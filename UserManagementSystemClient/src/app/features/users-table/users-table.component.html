@@ -1,0 +1,31 @@
+@if(onLoad) {
+    <mat-spinner></mat-spinner>
+}
+@else {
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <mat-text-column name="id"></mat-text-column>
+        <mat-text-column name="name"></mat-text-column>
+        <mat-text-column name="email"></mat-text-column>
+        <mat-text-column name="password"></mat-text-column>
+      
+           <!-- Star Column -->
+           <ng-container matColumnDef="star" stickyEnd>
+            <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+            <td mat-cell *matCellDef="let element">
+                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="updateUser('3000ms', '1500ms', element)">
+                      <span> update password </span>
+                    </button>
+                    <button mat-menu-item (click)="deleteUser('3000ms', '1500ms', element)">
+                      <span> delete user </span>
+                    </button>
+                  </mat-menu>
+            </td>
+          </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+}
